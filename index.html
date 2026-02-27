@@ -207,6 +207,8 @@ html, body {
   cursor:pointer;
 
   touch-action: manipulation;
+  overscroll-behavior: contain;
+
   -webkit-user-select: none;
   user-select: none;
 
@@ -668,16 +670,22 @@ function showFlashCard(){
   renderNotes(card.id);
 }
 
-flashCardDiv.addEventListener("pointerdown", (e) => {
-  e.preventDefault();
+flashCardDiv.addEventListener("pointerup", function(e){
 
   const now = Date.now();
-  // block accidental double-fire taps (common on mobile)
+
   if (now - lastTap < 250) return;
+
   lastTap = now;
 
   showingAnswer = !showingAnswer;
+
   showFlashCard();
+
+});
+
+flashCardDiv.addEventListener("scroll", function(e){
+  e.stopPropagation();
 });
 
 document.getElementById("btnKnow").onclick = ()=>{
