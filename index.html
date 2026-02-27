@@ -670,23 +670,48 @@ function showFlashCard(){
   renderNotes(card.id);
 }
 
-flashCardDiv.addEventListener("pointerup", function(e){
-
-  const now = Date.now();
-
-  if (now - lastTap < 250) return;
-
-  lastTap = now;
+function toggleCard() {
 
   showingAnswer = !showingAnswer;
 
   showFlashCard();
 
-});
+}
 
-flashCardDiv.addEventListener("scroll", function(e){
-  e.stopPropagation();
-});
+// detect mobile
+const isTouchDevice =
+  "ontouchstart" in window ||
+  navigator.maxTouchPoints > 0;
+
+// mobile → use touchend only
+if (isTouchDevice) {
+
+  flashCardDiv.addEventListener("touchend", function(e){
+
+    e.preventDefault();
+
+    const now = Date.now();
+
+    if (now - lastTap < 300) return;
+
+    lastTap = now;
+
+    toggleCard();
+
+  }, { passive:false });
+
+}
+
+// desktop → use click only
+else {
+
+  flashCardDiv.addEventListener("click", function(){
+
+    toggleCard();
+
+  });
+
+}
 
 document.getElementById("btnKnow").onclick = ()=>{
   const list = getFlashList();
