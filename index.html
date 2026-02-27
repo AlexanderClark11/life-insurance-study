@@ -4,10 +4,15 @@
 <meta charset="UTF-8">
 
 <meta name="viewport"
-content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+content="width=device-width,
+initial-scale=1,
+maximum-scale=1,
+minimum-scale=1,
+user-scalable=no,
+viewport-fit=cover">
 
 <meta name="theme-color" content="#0f172a">
-
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -649,16 +654,23 @@ function showFlashCard(){
 
   const card = list[index];
 
-  if(showingAnswer){
+ flashCardDiv.innerHTML = "";
+
+if (showingAnswer) {
 
   flashCardDiv.innerHTML =
-    `<strong>Answer:</strong><br><br>${card.answer}` +
-    `<br><br><strong>Explanation:</strong><br>${card.explanation}`;
+    `<div>
+      <strong>Answer:</strong><br><br>${card.answer}
+      <br><br>
+      <strong>Explanation:</strong><br>${card.explanation}
+    </div>`;
 
-}else{
+} else {
 
   flashCardDiv.innerHTML =
-    `<strong>Question:</strong><br><br>${card.question}`;
+    `<div>
+      <strong>Question:</strong><br><br>${card.question}
+    </div>`;
 
 }
 
