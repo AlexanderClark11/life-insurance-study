@@ -698,30 +698,21 @@ const isTouchDevice =
 // mobile → use touchend only
 if (isTouchDevice) {
 
-  flashCardDiv.addEventListener("touchend", function(e){
+  flashCardDiv.addEventListener("pointerup", function (e) {
 
-    e.preventDefault();
+  e.preventDefault();
 
-    const now = Date.now();
+  const now = Date.now();
 
-    if (now - lastTap < 300) return;
+  if (now - lastTap < 200) return;
 
-    lastTap = now;
+  lastTap = now;
 
-    toggleCard();
+  showingAnswer = !showingAnswer;
 
-  }, { passive:false });
+  showFlashCard();
 
-}
-
-// desktop → use click only
-else {
-
-  flashCardDiv.addEventListener("click", function(){
-
-    toggleCard();
-
-  });
+});
 
 }
 
