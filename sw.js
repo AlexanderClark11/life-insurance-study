@@ -1,4 +1,4 @@
-const CACHE_NAME = "li-practice-cache-v11";
+const CACHE_NAME = "li-practice-cache-v1";
 
 const FILES_TO_CACHE = [
   "/",
