@@ -23,7 +23,6 @@ viewport-fit=cover">
 <title>LifeInsuranceStudy</title>
 
 <style>
-
 * {
   box-sizing: border-box;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
@@ -36,231 +35,117 @@ html, body {
   height: 100%;
   min-height: 100vh;
   min-height: 100dvh;
-
-  background:
-    radial-gradient(circle at 20% 20%, #1e293b, #020617);
-
+  background: radial-gradient(circle at 20% 20%, #1e293b, #020617);
   color: #e2e8f0;
   overflow: hidden;
 }
 
-/* ===================== */
-/* COLORS */
-/* ===================== */
-
 :root{
-  --bg1:#020617;
-  --bg2:#0f172a;
-
   --panel: rgba(30,41,59,0.7);
-  --panel2: rgba(51,65,85,0.6);
-
   --accent1:#6366f1;
   --accent2:#22d3ee;
-
   --good:#22c55e;
   --bad:#ef4444;
-
   --muted:#94a3b8;
-
   --blur: blur(14px);
 }
 
-/* ===================== */
-/* APP ROOT */
-/* ===================== */
-
 #app {
-
   width: 100%;
   height: 100dvh;
-
   display: flex;
   flex-direction: column;
-
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* ===================== */
-/* TOP TABS */
-/* ===================== */
-
 .top-tabs {
-
   display:flex;
   gap:10px;
-
   padding:12px 14px;
-
   background: rgba(2,6,23,0.6);
   backdrop-filter: var(--blur);
-
   border-bottom: 1px solid rgba(255,255,255,.06);
 }
 
 .tab-btn {
-
   padding:12px 18px;
-
   border-radius:12px;
   border:none;
-
   cursor:pointer;
-
   background: rgba(51,65,85,.5);
   color:white;
-
   font-weight:600;
-
   transition:.2s;
 }
 
-.tab-btn:hover {
-  background: rgba(71,85,105,.6);
-}
+.tab-btn:hover { background: rgba(71,85,105,.6); }
 
 .tab-btn.active {
-
-  background: linear-gradient(
-    90deg,
-    var(--accent1),
-    var(--accent2)
-  );
-
+  background: linear-gradient(90deg, var(--accent1), var(--accent2));
   box-shadow: 0 0 10px rgba(99,102,241,.6);
 }
 
-/* ===================== */
-/* VIEW LAYOUT */
-/* ===================== */
-
-.view {
-  flex:1;
-  display:none;
-}
-
-.view.active {
-  display:flex;
-}
+.view { flex:1; display:none; }
+.view.active { display:flex; }
 
 .container {
-
   flex:1;
-
   display:flex;
-
   gap:14px;
   padding:14px;
 }
 
 .main {
-
   flex:1;
-
   display:flex;
   flex-direction:column;
-
   gap:14px;
 }
 
 .sidebar {
-
   width:360px;
-
   display:flex;
   flex-direction:column;
-
   gap:14px;
 }
 
-/* ===================== */
-/* GLASS PANELS */
-/* ===================== */
-
-.panel,
-.card {
-
+.panel, .card {
   background: var(--panel);
-
   backdrop-filter: var(--blur);
-
   border-radius:18px;
-
   border:1px solid rgba(255,255,255,.06);
-
-  box-shadow:
-    0 4px 20px rgba(0,0,0,.4);
+  box-shadow: 0 4px 20px rgba(0,0,0,.4);
 }
 
-/* ===================== */
-/* CARD */
-/* ===================== */
-
 .card {
-
   flex:1;
-
   padding:22px;
-
   overflow:auto;
-
   font-size: clamp(16px, 2vw, 20px);
-
   line-height:1.6;
-
   cursor:pointer;
-
   touch-action: manipulation;
   overscroll-behavior: contain;
-
   -webkit-user-select: none;
   user-select: none;
-
 }
 
-/* ===================== */
-/* PANEL */
-/* ===================== */
-
-.panel {
-
-  padding:16px;
-}
-
-/* ===================== */
-/* PROGRESS */
-/* ===================== */
+.panel { padding:16px; }
 
 .progress-container {
-
   height:8px;
-
   border-radius:999px;
-
   background: rgba(255,255,255,.06);
-
   overflow:hidden;
 }
 
 .progress-bar {
-
   height:100%;
-
   width:0%;
-
-  background: linear-gradient(
-    90deg,
-    var(--accent1),
-    var(--accent2)
-  );
-
+  background: linear-gradient(90deg, var(--accent1), var(--accent2));
   transition:.3s;
 }
-
-/* ===================== */
-/* BUTTONS */
-/* ===================== */
 
 .btn-row {
   display:flex;
@@ -269,168 +154,77 @@ html, body {
 }
 
 .action-btn {
-
   flex:1;
-
   padding:12px;
-
   border-radius:12px;
-
   border:none;
-
   cursor:pointer;
-
   font-weight:700;
-
   color:white;
-
   transition:.15s;
 }
 
-.action-btn:hover {
-  transform: translateY(-1px);
-}
+.action-btn:hover { transform: translateY(-1px); }
 
-.know {
-  background: linear-gradient(90deg,#16a34a,#22c55e);
-}
-
-.dont {
-  background: linear-gradient(90deg,#dc2626,#ef4444);
-}
-
-.review {
-  background: rgba(71,85,105,.6);
-}
-
-/* ===================== */
-/* STATS */
-/* ===================== */
+.review { background: rgba(71,85,105,.6); }
 
 .stat-line {
-
   display:flex;
-
   justify-content:space-between;
-
   margin-bottom:8px;
-
   color: var(--muted);
 }
 
-/* ===================== */
-/* NOTES */
-/* ===================== */
-
 .note-item {
-
   background: rgba(51,65,85,.6);
-
   padding:10px;
-
   border-radius:10px;
-
   margin-bottom:10px;
 }
 
 textarea {
-
   width:100%;
-
   border:none;
-
   border-radius:12px;
-
   padding:10px;
-
   background:#020617;
-
   color:white;
-
   resize:vertical;
 }
 
-/* ===================== */
-/* QUIZ */
-/* ===================== */
-
 .choice {
-
   background: rgba(51,65,85,.6);
-
   padding:14px;
-
   border-radius:12px;
-
   margin-top:10px;
-
   cursor:pointer;
-
   transition:.15s;
 }
 
-.choice:hover {
-  background: rgba(71,85,105,.8);
-}
+.choice:hover { background: rgba(71,85,105,.8); }
+.choice.correct { background: var(--good); }
+.choice.wrong { background: var(--bad); }
 
-.choice.correct {
-  background: var(--good);
-}
-
-.choice.wrong {
-  background: var(--bad);
-}
-
-/* ===================== */
-/* CONTROLS */
-/* ===================== */
-
-select,
-.small {
-
+select, .small {
   padding:10px 12px;
-
   border:none;
-
   border-radius:12px;
-
   background: rgba(51,65,85,.7);
-
   color:white;
-
   font-weight:600;
 }
 
-.small {
-  cursor:pointer;
-}
-
-/* ===================== */
-/* MOBILE */
-/* ===================== */
+.small { cursor:pointer; }
 
 @media (max-width:900px){
-
-  .container {
-    flex-direction:column;
-  }
-
-  .sidebar {
-    width:100%;
-  }
-
-}
-
-/* Rotation / mobile */
-@media (max-width: 900px) {
-  html, body { overflow: auto; } /* allow page to breathe on tiny screens */
+  .container { flex-direction:column; }
+  .sidebar { width:100%; }
+  html, body { overflow: auto; }
   #app { height: auto; min-height: 100dvh; }
-  .container { flex-direction: column; height: auto; }
-  .sidebar { width: 100%; min-width: 0; }
   .card { padding: 16px; }
 }
+
 @media screen and (orientation: landscape) and (max-width: 1024px){
-  /* landscape phone/tablet: keep side-by-side if possible */
   .container { flex-direction: row; }
   .sidebar { width: 320px; }
 }
@@ -442,7 +236,7 @@ select,
 
   <div class="top-tabs">
     <button class="tab-btn active" id="tabFlash" onclick="switchView('flash')">Flashcards</button>
-    <button class="tab-btn" id="tabQuiz" onclick="switchView('quiz')">Multiple Choice</button>
+    <button class="tab-btn" id="tabQuiz" onclick="switchView('quiz')">Quiz</button>
   </div>
 
   <!-- FLASHCARDS VIEW -->
@@ -459,14 +253,8 @@ select,
         <div class="card" id="flashCard">Loading...</div>
 
         <div class="btn-row">
-          <button class="action-btn know" id="btnKnow">Know</button>
-          <button class="action-btn dont" id="btnDont">Don't Know</button>
-
           <button class="action-btn review" onclick="prevCard()">Prev</button>
           <button class="action-btn review" onclick="nextCard()">Next</button>
-
-          <button class="action-btn review" id="reviewMissedBtn">Review Missed</button>
-          <button class="action-btn review" id="backAllBtn">All Cards</button>
         </div>
       </div>
 
@@ -495,12 +283,12 @@ select,
     </div>
   </div>
 
-  <!-- QUIZ VIEW (MULTIPLE CHOICE) -->
+  <!-- QUIZ VIEW -->
   <div class="view" id="viewQuiz">
     <div class="container">
 
       <div class="main">
-        <div class="controls-bar">
+        <div class="controls-bar" style="display:flex; gap:10px; flex-wrap:wrap;">
           <select id="questionCount">
             <option value="10">10 questions</option>
             <option value="20">20 questions</option>
@@ -514,12 +302,8 @@ select,
             <option value="test">Test mode</option>
           </select>
 
-          <button class="small" onclick="startQuiz()" style="background:linear-gradient(90deg,var(--accent1),var(--accent2));">
+          <button class="small" onclick="startQuiz()" style="background:linear-gradient(90deg,#16a34a,#22c55e);">
             Start
-          </button>
-
-          <button class="small" onclick="switchView('flash')">
-            Back to Flashcards
           </button>
         </div>
 
@@ -562,24 +346,11 @@ select,
 
 </div>
 
-<!-- Your data file (must define window.MI_EXAM_QUESTIONS) -->
 <script src="MIexam.js"></script>
-<script>
 
-navigator.serviceWorker.getRegistrations().then(regs => {
-  for (let reg of regs) {
-    reg.unregister();
-  }
-});
-
-caches.keys().then(keys => {
-  keys.forEach(key => caches.delete(key));
-});
-
-</script>
 <script>
 /* =========================
-   SHARED: APP TAB SWITCHING
+   TAB SWITCHING
 ========================= */
 function switchView(which){
   const flash = document.getElementById("viewFlash");
@@ -592,6 +363,9 @@ function switchView(which){
     quiz.classList.add("active");
     tabFlash.classList.remove("active");
     tabQuiz.classList.add("active");
+
+    // preload quiz data so it's never blank
+    quizEnsureData();
   }else{
     quiz.classList.remove("active");
     flash.classList.add("active");
@@ -633,9 +407,6 @@ function flashInit(){
 }
 
 function getFlashList(){
-  if(reviewMode === "missed"){
-    return cards.filter(c => missedCards.has(c.id));
-  }
   return cards;
 }
 
@@ -643,9 +414,7 @@ function showFlashCard(){
   const list = getFlashList();
 
   if(list.length === 0){
-    flashCardDiv.innerHTML = reviewMode === "missed" ? "No missed cards 🎉" : "No cards";
-    document.getElementById("statsFlash").innerText = "";
-    document.getElementById("progressBarFlash").style.width = ((knownCards.size + missedCards.size)/Math.max(cards.length,1))*100 + "%";
+    flashCardDiv.innerHTML = "No cards";
     return;
   }
 
@@ -654,89 +423,38 @@ function showFlashCard(){
 
   const card = list[index];
 
- flashCardDiv.innerHTML = "";
-
-if (showingAnswer) {
-
-  flashCardDiv.innerHTML =
-    `<div>
-      <strong>Answer:</strong><br><br>${card.answer}
-      <br><br>
-      <strong>Explanation:</strong><br>${card.explanation}
-    </div>`;
-
-} else {
-
-  flashCardDiv.innerHTML =
-    `<div>
-      <strong>Question:</strong><br><br>${card.question}
-    </div>`;
-
-}
+  if (showingAnswer) {
+    flashCardDiv.innerHTML =
+      `<div>
+        <strong>Answer:</strong><br><br>${card.answer}
+        <br><br>
+        <strong>Explanation:</strong><br>${card.explanation}
+      </div>`;
+  } else {
+    flashCardDiv.innerHTML =
+      `<div>
+        <strong>Question:</strong><br><br>${card.question}
+      </div>`;
+  }
 
   document.getElementById("statsFlash").innerText = `Card ${index+1} of ${list.length}`;
-
   document.getElementById("progressBarFlash").style.width =
     ((knownCards.size + missedCards.size) / Math.max(cards.length,1)) * 100 + "%";
 
   renderNotes(card.id);
 }
 
-function toggleCard() {
-
-  showingAnswer = !showingAnswer;
-
-  showFlashCard();
-
-}
-
-// detect mobile
-const isTouchDevice =
-  "ontouchstart" in window ||
-  navigator.maxTouchPoints > 0;
-
-// mobile → use touchend only
-if (isTouchDevice) {
-
-  flashCardDiv.addEventListener("pointerup", function (e) {
-
-  e.preventDefault();
-
+function toggleCard(){
   const now = Date.now();
-
   if (now - lastTap < 200) return;
-
   lastTap = now;
 
   showingAnswer = !showingAnswer;
-
   showFlashCard();
-
-});
-
 }
 
-document.getElementById("btnKnow").onclick = ()=>{
-  const list = getFlashList();
-  if(list.length === 0) return;
-  const card = list[index];
-
-  knownCards.add(card.id);
-  missedCards.delete(card.id);
-
-  nextCard();
-};
-
-document.getElementById("btnDont").onclick = ()=>{
-  const list = getFlashList();
-  if(list.length === 0) return;
-  const card = list[index];
-
-  missedCards.add(card.id);
-  knownCards.delete(card.id);
-
-  nextCard();
-};
+flashCardDiv.addEventListener("click", toggleCard);
+flashCardDiv.addEventListener("touchend", toggleCard);
 
 function nextCard(){
   index++;
@@ -751,28 +469,12 @@ function prevCard(){
   showFlashCard();
 }
 
-document.getElementById("reviewMissedBtn").onclick = ()=>{
-  reviewMode = "missed";
-  index = 0;
-  showingAnswer = false;
-  showFlashCard();
-};
-
-document.getElementById("backAllBtn").onclick = ()=>{
-  reviewMode = "all";
-  index = 0;
-  showingAnswer = false;
-  showFlashCard();
-};
-
-/* Notes add/edit/delete */
 document.getElementById("addNoteBtn").onclick = ()=>{
   const input = document.getElementById("noteInput");
   const text = input.value;
   if(!text.trim()) return;
 
   const list = getFlashList();
-  if(list.length === 0) return;
   const cardId = list[index].id;
 
   if(!notesData[cardId]) notesData[cardId] = [];
@@ -796,40 +498,7 @@ function renderNotes(cardId){
     text.textContent = n;
     text.style.whiteSpace = "pre-wrap";
 
-    const buttons = document.createElement("div");
-    buttons.style.display = "flex";
-    buttons.style.gap = "8px";
-    buttons.style.marginTop = "8px";
-
-    const edit = document.createElement("button");
-    edit.className = "small";
-    edit.textContent = "Edit";
-    edit.style.background = "linear-gradient(90deg,var(--accent1),var(--accent2))";
-
-    const del = document.createElement("button");
-    del.className = "small";
-    del.textContent = "Delete";
-    del.style.background = "var(--bad)";
-
-    edit.onclick = ()=>{
-      const input = document.getElementById("noteInput");
-      input.value = n;
-      notes.splice(i,1);
-      renderNotes(cardId);
-      input.focus();
-    };
-
-    del.onclick = ()=>{
-      notes.splice(i,1);
-      renderNotes(cardId);
-    };
-
-    buttons.appendChild(edit);
-    buttons.appendChild(del);
-
     div.appendChild(text);
-    div.appendChild(buttons);
-
     list.appendChild(div);
   });
 }
@@ -841,18 +510,16 @@ function updateFlashStats(){
 }
 
 /* =========================
-   QUIZ (MULTIPLE CHOICE)
+   QUIZ
 ========================= */
 let allQuestions = [];
 let quizQuestions = [];
 let quizIndex = 0;
-
 let quizLocked = false;
 let quizMode = "study";
-
 let quizCorrect = 0;
 let quizWrongList = [];
-let quizAnswered = new Set(); // track answered indexes so score is stable
+let quizAnswered = new Set();
 let quizReviewingWrong = false;
 
 const quizCard = document.getElementById("quizCard");
@@ -879,11 +546,9 @@ function startQuiz(){
   const countVal = document.getElementById("questionCount").value;
   const shuffled = [...allQuestions].sort(()=>Math.random()-0.5);
 
-  if(countVal === "all"){
-    quizQuestions = shuffled;
-  }else{
-    quizQuestions = shuffled.slice(0, parseInt(countVal,10));
-  }
+  quizQuestions = (countVal === "all")
+    ? shuffled
+    : shuffled.slice(0, parseInt(countVal,10));
 
   quizIndex = 0;
   quizLocked = false;
@@ -898,10 +563,7 @@ function startQuiz(){
 }
 
 function getChoices(correct){
-  // Build 4 unique choices from other correct answers
   const choices = [correct];
-
-  // Prevent infinite loop if dataset small
   const pool = allQuestions.map(q => q.correct).filter(Boolean);
   let guard = 0;
 
@@ -911,11 +573,7 @@ function getChoices(correct){
     if(r && !choices.includes(r)) choices.push(r);
   }
 
-  // If still not enough, duplicate-free fallback (rare)
-  while(choices.length < 4){
-    choices.push(correct);
-  }
-
+  while(choices.length < 4) choices.push(correct);
   return choices.sort(()=>Math.random()-0.5);
 }
 
@@ -923,7 +581,7 @@ function renderQuiz(){
   quizLocked = false;
 
   if(quizQuestions.length === 0){
-    quizCard.innerHTML = `<div class="muted">No questions selected.</div>`;
+    quizCard.innerHTML = `<div class="muted">Press Start to begin.</div>`;
     return;
   }
 
@@ -933,7 +591,7 @@ function renderQuiz(){
   const q = quizQuestions[quizIndex];
   const choices = getChoices(q.correct);
 
-  const header = `
+  let html = `
     <div class="muted" style="margin-bottom:10px;">
       Question ${quizIndex+1} / ${quizQuestions.length}
       ${quizReviewingWrong ? " • Reviewing wrong" : ""}
@@ -941,18 +599,13 @@ function renderQuiz(){
     <div class="quiz-question"><b>${escapeHTML(q.question)}</b></div>
   `;
 
-  let html = header;
-
   choices.forEach(c=>{
     html += `<div class="choice" data-choice="${escapeAttr(c)}">${escapeHTML(c)}</div>`;
   });
 
-  // Explanation area (study mode only shows after select; test mode keeps minimal)
   html += `<div id="quizExplain" class="muted" style="margin-top:12px;"></div>`;
-
   quizCard.innerHTML = html;
 
-  // attach listeners
   document.querySelectorAll(".choice").forEach(el=>{
     el.addEventListener("click", ()=> quizSelect(el, q));
   });
@@ -966,43 +619,31 @@ function quizSelect(el, q){
 
   const selected = el.getAttribute("data-choice") || "";
   const correct = q.correct || "";
-
   const choicesEls = Array.from(document.querySelectorAll(".choice"));
-
   const isCorrect = selected === correct;
 
-  // score only once per question index
   if(!quizAnswered.has(quizIndex)){
     quizAnswered.add(quizIndex);
-
-    if(isCorrect){
-      quizCorrect++;
-    }else{
-      // store original question object once
-      quizWrongList.push(q);
-    }
+    if(isCorrect) quizCorrect++;
+    else quizWrongList.push(q);
   }
 
   if(isCorrect){
     el.classList.add("correct");
     document.getElementById("quizExplain").innerHTML =
       quizMode === "study"
-        ? `<span style="color:#a7f3d0;"><b>Correct.</b></span>${q.explanation ? "<br><br>"+escapeHTML(q.explanation) : ""}`
-        : `<span style="color:#a7f3d0;"><b>Correct.</b></span>`;
-  }else{
+        ? `<b>Correct.</b>${q.explanation ? "<br><br>"+escapeHTML(q.explanation) : ""}`
+        : `<b>Correct.</b>`;
+  } else {
     el.classList.add("wrong");
-
     if(quizMode === "study"){
-      // reveal correct in study mode
       choicesEls.forEach(cel=>{
         if((cel.getAttribute("data-choice")||"") === correct) cel.classList.add("correct");
       });
       document.getElementById("quizExplain").innerHTML =
-        `<span style="color:#fecaca;"><b>Wrong.</b></span><br><br><b>Correct:</b> ${escapeHTML(correct)}${q.explanation ? "<br><br>"+escapeHTML(q.explanation) : ""}`;
-    }else{
-      // test mode: do NOT reveal correct
-      document.getElementById("quizExplain").innerHTML =
-        `<span style="color:#fecaca;"><b>Wrong.</b></span>`;
+        `<b>Wrong.</b><br><br><b>Correct:</b> ${escapeHTML(correct)}${q.explanation ? "<br><br>"+escapeHTML(q.explanation) : ""}`;
+    } else {
+      document.getElementById("quizExplain").innerHTML = `<b>Wrong.</b>`;
     }
   }
 
@@ -1014,8 +655,7 @@ function quizNext(){
   if(quizIndex < quizQuestions.length - 1){
     quizIndex++;
     renderQuiz();
-  }else{
-    // End reached: show summary
+  } else {
     quizShowSummary();
   }
 }
@@ -1031,26 +671,22 @@ function quizPrev(){
 function quizShowSummary(){
   const total = quizQuestions.length;
   const wrong = quizWrongList.length;
-  const score = quizCorrect;
 
   document.getElementById("quizStatus").textContent = "Finished";
 
   quizCard.innerHTML = `
     <div style="font-size:20px;"><b>Finished</b></div>
     <div class="muted" style="margin-top:10px;">
-      Score: <b>${score}</b> / <b>${total}</b><br>
+      Score: <b>${quizCorrect}</b> / <b>${total}</b><br>
       Wrong: <b>${wrong}</b><br><br>
       <button class="small" onclick="reviewWrong()" style="background:linear-gradient(90deg,var(--accent1),var(--accent2));">Review Wrong</button>
       <button class="small" onclick="startQuiz()" style="margin-left:8px;">Restart</button>
     </div>
   `;
-
   updateQuizUI(true);
 }
 
 function reviewWrong(){
-  if(!quizEnsureData()) return;
-
   if(quizWrongList.length === 0){
     quizCard.innerHTML = `<div class="muted">No wrong answers to review 🎉</div>`;
     document.getElementById("quizStatus").textContent = "No wrong";
@@ -1058,7 +694,6 @@ function reviewWrong(){
     return;
   }
 
-  // Turn wrong list into a review set (unique by id)
   const uniq = new Map();
   quizWrongList.forEach(q => uniq.set(q.id, q));
   quizQuestions = Array.from(uniq.values());
@@ -1067,7 +702,6 @@ function reviewWrong(){
   quizLocked = false;
   quizReviewingWrong = true;
 
-  // reset “answered” tracking for review run (score on review not important)
   quizAnswered = new Set();
   quizCorrect = 0;
   quizWrongList = [];
@@ -1079,16 +713,11 @@ function reviewWrong(){
 
 function updateQuizUI(forceFinished=false){
   const total = quizQuestions.length || 0;
-  const scoreText = `${quizCorrect}/${total}`;
-  document.getElementById("quizScore").textContent = scoreText;
+  document.getElementById("quizScore").textContent = `${quizCorrect}/${total}`;
   document.getElementById("quizWrong").textContent = String(quizReviewingWrong ? "-" : quizWrongList.length);
 
   const prog = total ? ((Math.min(quizIndex+1,total))/total)*100 : 0;
-  document.getElementById("progressBarQuiz").style.width = prog + "%";
-
-  if(forceFinished){
-    document.getElementById("progressBarQuiz").style.width = "100%";
-  }
+  document.getElementById("progressBarQuiz").style.width = (forceFinished ? 100 : prog) + "%";
 }
 
 /* Safety helpers */
@@ -1101,12 +730,12 @@ function escapeHTML(s){
     .replaceAll("'","&#39;");
 }
 function escapeAttr(s){
-  // attr-safe (keep it simple)
   return escapeHTML(s).replaceAll("\n"," ");
 }
 
 /* Boot */
 flashInit();
+quizEnsureData();
 </script>
 
 </body>
