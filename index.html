@@ -485,12 +485,14 @@ document.getElementById("addNoteBtn").onclick = ()=>{
 };
 
 function renderNotes(cardId){
+
   const list = document.getElementById("notesList");
   list.innerHTML = "";
 
   const notes = notesData[cardId] || [];
 
   notes.forEach((n,i)=>{
+
     const div = document.createElement("div");
     div.className = "note-item";
 
@@ -498,9 +500,48 @@ function renderNotes(cardId){
     text.textContent = n;
     text.style.whiteSpace = "pre-wrap";
 
+    const buttons = document.createElement("div");
+    buttons.style.display = "flex";
+    buttons.style.gap = "8px";
+    buttons.style.marginTop = "8px";
+
+    const edit = document.createElement("button");
+    edit.className = "small";
+    edit.textContent = "Edit";
+    edit.style.background =
+      "linear-gradient(90deg,var(--accent1),var(--accent2))";
+
+    const del = document.createElement("button");
+    del.className = "small";
+    del.textContent = "Delete";
+    del.style.background = "var(--bad)";
+
+    edit.onclick = ()=>{
+      const input = document.getElementById("noteInput");
+      input.value = n;
+
+      notes.splice(i,1);
+
+      renderNotes(cardId);
+
+      input.focus();
+    };
+
+    del.onclick = ()=>{
+      notes.splice(i,1);
+      renderNotes(cardId);
+    };
+
+    buttons.appendChild(edit);
+    buttons.appendChild(del);
+
     div.appendChild(text);
+    div.appendChild(buttons);
+
     list.appendChild(div);
+
   });
+
 }
 
 function updateFlashStats(){
