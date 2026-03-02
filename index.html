@@ -66,6 +66,8 @@ html, body {
   background: rgba(2,6,23,0.6);
   backdrop-filter: var(--blur);
   border-bottom: 1px solid rgba(255,255,255,.06);
+  align-items:center;
+  flex-wrap:wrap;
 }
 
 .tab-btn {
@@ -175,21 +177,191 @@ html, body {
   color: var(--muted);
 }
 
+/* reused as dictionary cards + note cards */
 .note-item {
-  background: rgba(51,65,85,.6);
-  padding:10px;
-  border-radius:10px;
-  margin-bottom:10px;
+
+  background: rgba(51,65,85,.55);
+
+  padding:6px;
+  margin-bottom:6px;
+
+  border-radius:8px;
+
+  font-size:14px;
+  line-height:1.3;
+
+  cursor:pointer;
+
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: break-word;
+
 }
 
-textarea {
+#notesPanel {
+
+  position: fixed;
+
+  right: 0;
+  top: 0;
+  bottom: 0;
+
+  width: 320px;
+
+  background: rgba(15,23,42,.95);
+
+  border-left: 1px solid rgba(255,255,255,.1);
+
+  display: none;
+
+  flex-direction: column;
+
+  padding: 10px;
+
+  z-index: 9999;
+
+}
+
+#noteInput {
+
   width:100%;
+  min-height:60px;
+  max-height:200px;
+
+  resize:none;
+
+  border-radius:8px;
   border:none;
-  border-radius:12px;
-  padding:10px;
+
+  padding:6px;
+
   background:#020617;
   color:white;
-  resize:vertical;
+
+}
+
+#notesList {
+
+  flex:1;
+  overflow:auto;
+
+}
+
+.noteItem {
+
+  background: rgba(30,41,59,.45);
+
+  backdrop-filter: blur(14px);
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  border-radius: 14px;
+
+  padding: 10px;
+
+  margin-bottom: 10px;
+
+  font-size: 14px;
+
+  line-height: 1.4;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,.35);
+
+  transition: .15s;
+
+}
+
+
+/* hover glow */
+
+.noteItem:hover {
+
+  border: 1px solid rgba(99,102,241,.5);
+
+  box-shadow: 0 0 10px rgba(99,102,241,.4);
+
+}
+.noteItem div:first-child {
+
+  white-space: pre-wrap;
+
+  word-break: break-word;
+
+  margin-bottom: 6px;
+
+}
+
+/* =========================
+   NOTES GLASS BUTTONS FIX
+========================= */
+
+#notesPanel button {
+
+  border-radius: 10px;
+  padding: 4px 10px;
+  cursor: pointer;
+
+  border: 1px solid rgba(255,255,255,.15);
+  background: rgba(51,65,85,.35);
+
+  backdrop-filter: blur(10px);
+
+  color: white;
+  font-weight: 700;
+
+}
+
+
+/* SAVE */
+
+#notesPanel .saveBtn {
+
+  background: rgba(34,197,94,.35);
+  border: 1px solid rgba(34,197,94,.8);
+
+}
+
+
+/* EDIT */
+
+#notesPanel .editBtn {
+
+  background: rgba(59,130,246,.35);
+  border: 1px solid rgba(59,130,246,.8);
+
+}
+
+
+/* DELETE */
+
+#notesPanel .deleteBtn {
+
+  background: rgba(239,68,68,.35);
+  border: 1px solid rgba(239,68,68,.8);
+
+}
+
+
+/* hover */
+
+#notesPanel .saveBtn:hover {
+  background: rgba(34,197,94,.55);
+}
+
+#notesPanel .editBtn:hover {
+  background: rgba(59,130,246,.55);
+}
+
+#notesPanel .deleteBtn:hover {
+  background: rgba(239,68,68,.55);
+}
+
+
+/* rotate pencil */
+
+.pencilIcon {
+  display:inline-block;
+  transform: rotate(-45deg);
 }
 
 .choice {
@@ -205,16 +377,20 @@ textarea {
 .choice.correct { background: var(--good); }
 .choice.wrong { background: var(--bad); }
 
-select, .small {
+select, .small, input, textarea {
   padding:10px 12px;
   border:none;
   border-radius:12px;
   background: rgba(51,65,85,.7);
   color:white;
   font-weight:600;
+  outline:none;
 }
 
 .small { cursor:pointer; }
+
+.dict-term { font-weight:800; color: var(--accent2); }
+.dict-cat  { font-size:12px; color: var(--muted); margin-bottom:4px; }
 
 @media (max-width:900px){
   .container { flex-direction:column; }
@@ -224,10 +400,50 @@ select, .small {
   .card { padding: 16px; }
 }
 
-@media screen and (orientation: landscape) and (max-width: 1024px){
-  .container { flex-direction: row; }
-  .sidebar { width: 320px; }
+/* ===== DICTIONARY FIX ===== */
+#viewNotes{ overflow: hidden; }
+#viewNotes .container,
+#viewNotes .main{ height: 100%; min-height: 0; }
+
+#viewNotes .card{
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  cursor: default;
+  touch-action: pan-y;
+  -webkit-user-select: text;
+  user-select: text;
 }
+
+#dictSearch {
+  width: 100%;
+  margin-bottom: 10px;
+  background: #020617;
+}
+
+#dictList{
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  padding-right: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dict-card{
+  background: rgba(51,65,85,.6);
+  border-radius: 14px;
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,.06);
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+}
+
+.dict-def{ line-height: 1.55; }
+
 </style>
 </head>
 
@@ -237,6 +453,29 @@ select, .small {
   <div class="top-tabs">
     <button class="tab-btn active" id="tabFlash" onclick="switchView('flash')">Flashcards</button>
     <button class="tab-btn" id="tabQuiz" onclick="switchView('quiz')">Quiz</button>
+    <button class="tab-btn" id="tabNotes" onclick="switchView('notes')">Dictionary</button>
+    <button class="tab-btn" onclick="toggleNotesPanel()">Notes</button>
+  </div>
+
+  <!-- DICTIONARY VIEW -->
+  <div class="view" id="viewNotes">
+    <div class="container">
+      <div class="main">
+        <div class="card">
+          <h3 style="margin-top:0">Dictionary</h3>
+
+          <input id="dictSearch" placeholder="Search term..." >
+
+          <div id="dictMeta" class="muted" style="margin-bottom:10px; font-size: 13px;"></div>
+
+          <div id="dictList"></div>
+
+          <div id="dictEmpty" class="muted" style="display:none;">
+            No results.
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- FLASHCARDS VIEW -->
@@ -267,15 +506,9 @@ select, .small {
         </div>
 
         <div class="panel">
-          <h3 style="margin:0 0 12px 0;">Notes</h3>
-          <div id="notesList"></div>
-
-          <textarea id="noteInput" placeholder="Write notes here..."></textarea>
-          <button class="small" id="addNoteBtn" style="width:100%; margin-top:10px; background:linear-gradient(90deg,var(--accent1),var(--accent2));">
-            Add Note
-          </button>
-          <div class="muted" style="margin-top:10px; font-size:12px;">
-            Tip: Use Enter for new lines. Edit puts the note back into the box.
+          <h3 style="margin:0 0 12px 0;">Tip</h3>
+          <div class="muted" style="line-height:1.5;">
+            Use <b>Open Notes</b> anytime to pull up your notes while studying.
           </div>
         </div>
       </div>
@@ -289,12 +522,7 @@ select, .small {
 
       <div class="main">
         <div class="controls-bar" style="display:flex; gap:10px; flex-wrap:wrap;">
-          <select id="questionCount">
-            <option value="10">10 questions</option>
-            <option value="20">20 questions</option>
-            <option value="30">30 questions</option>
-            <option value="50">50 questions</option>
-            <option value="all">All questions</option>
+          <input id="questionCount" type="number" placeholder="Number of questions" min="1" style="width:160px;">
           </select>
 
           <select id="mode">
@@ -302,7 +530,7 @@ select, .small {
             <option value="test">Test mode</option>
           </select>
 
-          <button class="small" onclick="startQuiz()" style="background:linear-gradient(90deg,#16a34a,#22c55e);">
+          <button class="small" onclick="startQuiz()" style="background:linear-gradient(90deg,#16a34a,#22c55e); font-weight:800;">
             Start
           </button>
         </div>
@@ -324,13 +552,6 @@ select, .small {
 
       <div class="sidebar">
         <div class="panel">
-          <h3 style="margin:0 0 12px 0;">Quiz Stats</h3>
-          <div class="stat-line"><span>Score</span><span id="quizScore">0/0</span></div>
-          <div class="stat-line"><span>Wrong</span><span id="quizWrong">0</span></div>
-          <div class="stat-line"><span>Status</span><span id="quizStatus" class="muted">Idle</span></div>
-        </div>
-
-        <div class="panel">
           <h3 style="margin:0 0 12px 0;">Rules</h3>
           <div class="muted" style="line-height:1.5;">
             • Pick one answer.<br>
@@ -339,39 +560,79 @@ select, .small {
             • Use Review Wrong at the end or anytime.
           </div>
         </div>
+
+        <div class="panel">
+          <h3 style="margin:0 0 12px 0;">Studying</h3>
+          <div class="muted" style="line-height:1.5;">
+            When you miss one, open Notes and write a quick “Mistake Note”. That’s the fastest score boost.
+          </div>
+        </div>
       </div>
 
     </div>
   </div>
 
+  <div id="notesPanel">
+
+  <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+    <b>Notes</b>
+    <button onclick="toggleNotesPanel()">✖</button>
+  </div>
+
+  <textarea id="noteInput" placeholder="Write note..."></textarea>
+
+  <button class="saveBtn" onclick="saveNote()">💾 Save</button>
+
+  <div id="notesList"></div>
+
+</div>
+
 </div>
 
 <script src="MIexam.js"></script>
+<script src="dictionary.js"></script>
 
 <script>
 /* =========================
    TAB SWITCHING
 ========================= */
 function switchView(which){
+
   const flash = document.getElementById("viewFlash");
   const quiz  = document.getElementById("viewQuiz");
+  const notes = document.getElementById("viewNotes");
+
   const tabFlash = document.getElementById("tabFlash");
   const tabQuiz  = document.getElementById("tabQuiz");
+  const tabNotes = document.getElementById("tabNotes");
 
-  if(which === "quiz"){
-    flash.classList.remove("active");
-    quiz.classList.add("active");
-    tabFlash.classList.remove("active");
-    tabQuiz.classList.add("active");
+  flash.classList.remove("active");
+  quiz.classList.remove("active");
+  notes.classList.remove("active");
 
-    // preload quiz data so it's never blank
-    quizEnsureData();
-  }else{
-    quiz.classList.remove("active");
+  tabFlash.classList.remove("active");
+  tabQuiz.classList.remove("active");
+  tabNotes.classList.remove("active");
+
+  if(which === "flash"){
     flash.classList.add("active");
-    tabQuiz.classList.remove("active");
     tabFlash.classList.add("active");
   }
+
+  if(which === "quiz"){
+    quiz.classList.add("active");
+    tabQuiz.classList.add("active");
+  }
+
+  if(which === "notes"){
+    notes.classList.add("active");
+    tabNotes.classList.add("active");
+
+    renderDictionary(
+      document.getElementById("dictSearch")?.value || ""
+    );
+  }
+
 }
 
 /* =========================
@@ -384,8 +645,6 @@ let lastTap = 0;
 
 let knownCards = new Set();
 let missedCards = new Set();
-let notesData = {};
-let reviewMode = "all";
 
 const flashCardDiv = document.getElementById("flashCard");
 
@@ -406,42 +665,34 @@ function flashInit(){
   updateFlashStats();
 }
 
-function getFlashList(){
-  return cards;
-}
-
 function showFlashCard(){
-  const list = getFlashList();
-
-  if(list.length === 0){
+  if(cards.length === 0){
     flashCardDiv.innerHTML = "No cards";
     return;
   }
 
-  if(index >= list.length) index = 0;
+  if(index >= cards.length) index = 0;
   if(index < 0) index = 0;
 
-  const card = list[index];
+  const card = cards[index];
 
   if (showingAnswer) {
     flashCardDiv.innerHTML =
       `<div>
-        <strong>Answer:</strong><br><br>${card.answer}
+        <strong>Answer:</strong><br><br>${escapeHTML(card.answer)}
         <br><br>
-        <strong>Explanation:</strong><br>${card.explanation}
+        <strong>Explanation:</strong><br>${escapeHTML(card.explanation)}
       </div>`;
   } else {
     flashCardDiv.innerHTML =
       `<div>
-        <strong>Question:</strong><br><br>${card.question}
+        <strong>Question:</strong><br><br>${escapeHTML(card.question)}
       </div>`;
   }
 
-  document.getElementById("statsFlash").innerText = `Card ${index+1} of ${list.length}`;
+  document.getElementById("statsFlash").innerText = `Card ${index+1} of ${cards.length}`;
   document.getElementById("progressBarFlash").style.width =
     ((knownCards.size + missedCards.size) / Math.max(cards.length,1)) * 100 + "%";
-
-  renderNotes(card.id);
 }
 
 function toggleCard(){
@@ -467,81 +718,6 @@ function prevCard(){
   index--;
   showingAnswer = false;
   showFlashCard();
-}
-
-document.getElementById("addNoteBtn").onclick = ()=>{
-  const input = document.getElementById("noteInput");
-  const text = input.value;
-  if(!text.trim()) return;
-
-  const list = getFlashList();
-  const cardId = list[index].id;
-
-  if(!notesData[cardId]) notesData[cardId] = [];
-  notesData[cardId].push(text);
-
-  input.value = "";
-  renderNotes(cardId);
-};
-
-function renderNotes(cardId){
-
-  const list = document.getElementById("notesList");
-  list.innerHTML = "";
-
-  const notes = notesData[cardId] || [];
-
-  notes.forEach((n,i)=>{
-
-    const div = document.createElement("div");
-    div.className = "note-item";
-
-    const text = document.createElement("div");
-    text.textContent = n;
-    text.style.whiteSpace = "pre-wrap";
-
-    const buttons = document.createElement("div");
-    buttons.style.display = "flex";
-    buttons.style.gap = "8px";
-    buttons.style.marginTop = "8px";
-
-    const edit = document.createElement("button");
-    edit.className = "small";
-    edit.textContent = "Edit";
-    edit.style.background =
-      "linear-gradient(90deg,var(--accent1),var(--accent2))";
-
-    const del = document.createElement("button");
-    del.className = "small";
-    del.textContent = "Delete";
-    del.style.background = "var(--bad)";
-
-    edit.onclick = ()=>{
-      const input = document.getElementById("noteInput");
-      input.value = n;
-
-      notes.splice(i,1);
-
-      renderNotes(cardId);
-
-      input.focus();
-    };
-
-    del.onclick = ()=>{
-      notes.splice(i,1);
-      renderNotes(cardId);
-    };
-
-    buttons.appendChild(edit);
-    buttons.appendChild(del);
-
-    div.appendChild(text);
-    div.appendChild(buttons);
-
-    list.appendChild(div);
-
-  });
-
 }
 
 function updateFlashStats(){
@@ -585,20 +761,29 @@ function startQuiz(){
   quizMode = document.getElementById("mode").value;
 
   const countVal = document.getElementById("questionCount").value;
-  const shuffled = [...allQuestions].sort(()=>Math.random()-0.5);
 
-  quizQuestions = (countVal === "all")
-    ? shuffled
-    : shuffled.slice(0, parseInt(countVal,10));
+const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
 
-  quizIndex = 0;
-  quizLocked = false;
-  quizCorrect = 0;
-  quizWrongList = [];
-  quizAnswered = new Set();
-  quizReviewingWrong = false;
+if (!countVal || countVal === "all") {
 
-  document.getElementById("quizStatus").textContent = "Running";
+  quizQuestions = shuffled;
+
+} else {
+
+  const num = parseInt(countVal);
+
+  if (isNaN(num) || num <= 0) {
+
+    quizQuestions = shuffled;
+
+  } else {
+
+    quizQuestions = shuffled.slice(0, num);
+
+  }
+
+}
+
   renderQuiz();
   updateQuizUI();
 }
@@ -710,27 +895,56 @@ function quizPrev(){
 }
 
 function quizShowSummary(){
+
   const total = quizQuestions.length;
   const wrong = quizWrongList.length;
+  const correct = quizCorrect;
 
-  document.getElementById("quizStatus").textContent = "Finished";
+  let percent = 0;
+
+  if (total > 0) {
+    percent = Math.round((correct / total) * 100);
+  }
 
   quizCard.innerHTML = `
-    <div style="font-size:20px;"><b>Finished</b></div>
+    <div style="font-size:22px;"><b>Finished</b></div>
+
     <div class="muted" style="margin-top:10px;">
-      Score: <b>${quizCorrect}</b> / <b>${total}</b><br>
-      Wrong: <b>${wrong}</b><br><br>
-      <button class="small" onclick="reviewWrong()" style="background:linear-gradient(90deg,var(--accent1),var(--accent2));">Review Wrong</button>
-      <button class="small" onclick="startQuiz()" style="margin-left:8px;">Restart</button>
+
+      Score: <b>${correct}</b> / <b>${total}</b><br>
+      Wrong: <b>${wrong}</b><br>
+
+      <br>
+
+      Percentage: <b style="font-size:20px; color:#22c55e;">
+        ${percent}%
+      </b>
+
+      <br><br>
+
+      <button class="small"
+        onclick="reviewWrong()"
+        style="background:linear-gradient(90deg,var(--accent1),var(--accent2));"
+      >
+        Review Wrong
+      </button>
+
+      <button class="small"
+        onclick="startQuiz()"
+        style="margin-left:8px;"
+      >
+        Restart
+      </button>
+
     </div>
   `;
+
   updateQuizUI(true);
 }
 
 function reviewWrong(){
   if(quizWrongList.length === 0){
     quizCard.innerHTML = `<div class="muted">No wrong answers to review 🎉</div>`;
-    document.getElementById("quizStatus").textContent = "No wrong";
     updateQuizUI();
     return;
   }
@@ -747,16 +961,12 @@ function reviewWrong(){
   quizCorrect = 0;
   quizWrongList = [];
 
-  document.getElementById("quizStatus").textContent = "Reviewing wrong";
   renderQuiz();
   updateQuizUI();
 }
 
 function updateQuizUI(forceFinished=false){
   const total = quizQuestions.length || 0;
-  document.getElementById("quizScore").textContent = `${quizCorrect}/${total}`;
-  document.getElementById("quizWrong").textContent = String(quizReviewingWrong ? "-" : quizWrongList.length);
-
   const prog = total ? ((Math.min(quizIndex+1,total))/total)*100 : 0;
   document.getElementById("progressBarQuiz").style.width = (forceFinished ? 100 : prog) + "%";
 }
@@ -774,9 +984,201 @@ function escapeAttr(s){
   return escapeHTML(s).replaceAll("\n"," ");
 }
 
-/* Boot */
+/* =========================
+   DICTIONARY TAB
+========================= */
+function getTermData(t) {
+  return {
+    term: t.term || t.Term || t.word || t.title || "",
+    definition: t.definition || t.Definition || t.meaning || t.desc || "",
+    category: t.category || t.Category || ""
+  };
+}
+
+function renderDictionary(filter = "") {
+  const list = document.getElementById("dictList");
+  const meta = document.getElementById("dictMeta");
+  if (!list) return;
+
+  if (typeof TERMS === "undefined" || !Array.isArray(TERMS)) {
+    list.innerHTML = "dictionary.js not loaded";
+    return;
+  }
+
+  list.innerHTML = "";
+  let shown = 0;
+
+  TERMS.forEach(raw => {
+    const t = getTermData(raw);
+    const text = (t.term + " " + t.definition + " " + t.category).toLowerCase();
+
+    if (filter && !text.includes(filter.toLowerCase())) return;
+
+    const div = document.createElement("div");
+    div.className = "dict-card";
+    div.innerHTML =
+      "<div class='dict-term'>" + escapeHTML(t.term) + "</div>" +
+      "<div class='dict-cat'>" + escapeHTML(t.category) + "</div>" +
+      "<div class='dict-def'>" + escapeHTML(t.definition) + "</div>";
+
+    list.appendChild(div);
+    shown++;
+  });
+
+  if (meta) meta.innerText = shown + " / " + TERMS.length + " terms";
+}
+
+const dictSearch = document.getElementById("dictSearch");
+if (dictSearch) {
+  dictSearch.addEventListener("input", e => renderDictionary(e.target.value));
+}
+
+/* =========================
+   Boot
+========================= */
 flashInit();
 quizEnsureData();
+renderDictionary("");
+
+
+
+const noteBox = document.getElementById("noteBox");
+
+if (noteBox) {
+
+  noteBox.addEventListener("input", () => {
+
+    noteBox.style.height = "auto";
+    noteBox.style.height = noteBox.scrollHeight + "px";
+
+  });
+
+}
+
+
+
+/* =========================
+   NOTES PANEL SYSTEM
+========================= */
+
+let notes = [];
+
+try {
+  notes = JSON.parse(localStorage.getItem("notes")) || [];
+} catch {
+  notes = [];
+}
+
+let editingIndex = null;
+
+function toggleNotesPanel(){
+
+  const p = document.getElementById("notesPanel");
+
+  if(p.style.display === "flex"){
+
+    p.style.display = "none";
+
+  } else {
+
+    p.style.display = "flex";
+
+    renderNotes();
+
+  }
+
+}
+
+function saveNote(){
+
+  const box = document.getElementById("noteInput");
+
+  if(!box) return;
+
+  const text = box.value.trim();
+
+  if(text === "") return;
+
+  if(editingIndex !== null){
+
+    notes[editingIndex] = text;
+
+    editingIndex = null;
+
+  } else {
+
+    notes.unshift(text);
+
+  }
+
+  localStorage.setItem("notes", JSON.stringify(notes));
+
+  box.value = "";
+
+  renderNotes();
+
+}
+
+function deleteNote(i){
+
+  notes.splice(i,1);
+
+  localStorage.setItem("notes", JSON.stringify(notes));
+
+  renderNotes();
+
+}
+
+function editNote(i){
+
+  const box = document.getElementById("noteInput");
+
+  if(!box) return;
+
+  box.value = notes[i];
+
+  editingIndex = i;
+
+}
+
+function renderNotes(){
+
+  const list = document.getElementById("notesList");
+
+  if(!list) return;
+
+  list.innerHTML = "";
+
+  notes.forEach((n,i)=>{
+
+    const div = document.createElement("div");
+
+    div.className = "noteItem";
+
+    div.innerHTML = `
+  <div>${n}</div>
+
+  <div class="noteBtns">
+
+    <button class="editBtn" onclick="editNote(${i})">
+      <span class="pencilIcon">✏</span>
+    </button>
+
+    <button class="deleteBtn" onclick="deleteNote(${i})">
+      🗑
+    </button>
+
+  </div>
+`;
+
+    list.appendChild(div);
+
+  });
+
+}
+
+</script>
+
 </script>
 
 </body>
