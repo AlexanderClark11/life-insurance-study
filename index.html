@@ -544,7 +544,7 @@ select, .small, input, textarea {
         </div>
 
         <div class="btn-row">
-          <button class="action-btn review" onclick="quizPrev()">Prev</button>
+          <button class="action-btn review" id="prevBtn" onclick="quizPrev()">Prev</button>
           <button class="action-btn review" onclick="quizNext()">Next</button>
           <button class="action-btn review" onclick="reviewWrong()">Review Wrong</button>
         </div>
@@ -797,6 +797,20 @@ if (quizMode === "test") {
 } else {
   if (notesBtn) notesBtn.style.opacity = "1";
 }
+// 🔒 Disable going back in Test mode
+const prevBtn = document.getElementById("prevBtn");
+
+if (quizMode === "test") {
+  if (prevBtn) {
+    prevBtn.style.opacity = "0.4";
+    prevBtn.style.pointerEvents = "none";
+  }
+} else {
+  if (prevBtn) {
+    prevBtn.style.opacity = "1";
+    prevBtn.style.pointerEvents = "auto";
+  }
+}
 
 // 🔥 Generate stable choices ONCE per question
 quizQuestions = quizQuestions.map(q => ({
@@ -941,6 +955,10 @@ function quizNext(){
 }
 
 function quizPrev(){
+
+  // 🚫 Block going back in Test mode
+  if (quizMode === "test") return;
+
   if(quizQuestions.length === 0) return;
   if(quizIndex > 0){
     quizIndex--;
