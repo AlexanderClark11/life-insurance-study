@@ -454,7 +454,7 @@ select, .small, input, textarea {
     <button class="tab-btn active" id="tabFlash" onclick="switchView('flash')">Flashcards</button>
     <button class="tab-btn" id="tabQuiz" onclick="switchView('quiz')">Quiz</button>
     <button class="tab-btn" id="tabNotes" onclick="switchView('notes')">Dictionary</button>
-    <button class="tab-btn" onclick="toggleNotesPanel()">Notes</button>
+    <button class="tab-btn" id="notesBtn" onclick="toggleNotesPanel()">Notes</button>
   </div>
 
   <!-- DICTIONARY VIEW -->
@@ -659,6 +659,7 @@ function flashInit(){
     question:q.question,
     answer:q.correct,
     explanation:q.explanation||""
+    
   }));
 
   showFlashCard();
@@ -783,6 +784,25 @@ if (!countVal || countVal === "all") {
   }
 
 }
+// 🔒 Force close notes panel in Test mode
+if (quizMode === "test") {
+  const panel = document.getElementById("notesPanel");
+  if (panel) panel.style.display = "none";
+}
+// 🔒 Disable notes during test mode
+const notesBtn = document.getElementById("notesBtn");
+
+if (quizMode === "test") {
+  if (notesBtn) notesBtn.style.opacity = "0.4";
+} else {
+  if (notesBtn) notesBtn.style.opacity = "1";
+}
+
+// 🔥 Generate stable choices ONCE per question
+quizQuestions = quizQuestions.map(q => ({
+  ...q,
+  choices: getChoices(q.correct)
+}));
 
   renderQuiz();
   updateQuizUI();
@@ -815,7 +835,7 @@ function renderQuiz(){
   if(quizIndex >= quizQuestions.length) quizIndex = quizQuestions.length - 1;
 
   const q = quizQuestions[quizIndex];
-  const choices = getChoices(q.correct);
+  const choices = q.choices;
 
   let html = `
     <div class="muted" style="margin-bottom:10px;">
@@ -850,9 +870,43 @@ function quizSelect(el, q){
 
   if(!quizAnswered.has(quizIndex)){
     quizAnswered.add(quizIndex);
-    if(isCorrect) quizCorrect++;
-    else quizWrongList.push(q);
+
+    if(isCorrect){
+  quizCorrect++;
+} else {
+  quizWrongList.push(q);
+
+  // 🔒 Only auto-save in Study mode
+  if (quizMode === "study") {
+
+  try {
+    let existingNotes = [];
+    try {
+      existingNotes = JSON.parse(localStorage.getItem("notes")) || [];
+    } catch {}
+
+    const autoNote = `${q.explanation || "No explanation provided."}`;
+
+    existingNotes.unshift(autoNote);
+    localStorage.setItem("notes", JSON.stringify(existingNotes));
+
+    if (Array.isArray(notes)) {
+      notes = existingNotes;
+    }
+
+    // 🔄 Live update if panel open
+    const panel = document.getElementById("notesPanel");
+    if (panel && panel.style.display === "flex") {
+      renderNotes();
+    }
+
+  } catch(e){
+    console.log("Auto note failed:", e);
   }
+
+  }
+ }
+}
 
   if(isCorrect){
     el.classList.add("correct");
@@ -867,7 +921,7 @@ function quizSelect(el, q){
         if((cel.getAttribute("data-choice")||"") === correct) cel.classList.add("correct");
       });
       document.getElementById("quizExplain").innerHTML =
-        `<b>Wrong.</b><br><br><b>Correct:</b> ${escapeHTML(correct)}${q.explanation ? "<br><br>"+escapeHTML(q.explanation) : ""}`;
+        `<b>Wrong.</b><br><br>${q.explanation ? escapeHTML(q.explanation) : "No explanation provided."}`;
     } else {
       document.getElementById("quizExplain").innerHTML = `<b>Wrong.</b>`;
     }
@@ -1073,18 +1127,18 @@ let editingIndex = null;
 
 function toggleNotesPanel(){
 
+  // 🚫 Block notes in test mode
+  if (quizMode === "test" && document.getElementById("viewQuiz").classList.contains("active")) {
+    return;
+  }
+
   const p = document.getElementById("notesPanel");
 
   if(p.style.display === "flex"){
-
     p.style.display = "none";
-
   } else {
-
     p.style.display = "flex";
-
     renderNotes();
-
   }
 
 }
@@ -1176,8 +1230,6 @@ function renderNotes(){
   });
 
 }
-
-</script>
 
 </script>
 
