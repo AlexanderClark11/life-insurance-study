@@ -442,7 +442,52 @@ select, .small, input, textarea {
   box-shadow: 0 6px 18px rgba(0,0,0,.25);
 }
 
-.dict-def{ line-height: 1.55; }
+.dict-def{ line-height: 1.55; 
+
+}
+
+/* ===== QUIZ DICTIONARY HIGHLIGHT ===== */
+
+.dict-highlight {
+  color: #22d3ee;
+  font-weight: 700;
+  border-bottom: 2px solid rgba(34,211,238,.6);
+  cursor: pointer;
+  transition: .15s;
+}
+
+.dict-highlight:hover {
+  color: #67e8f9;
+  border-bottom: 2px solid #67e8f9;
+}
+
+/* ===== DICTIONARY POPUP ===== */
+
+.dict-popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.dict-popup-inner {
+  background: rgba(30,41,59,.95);
+  backdrop-filter: blur(18px);
+  padding: 24px;
+  border-radius: 18px;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 0 25px rgba(0,0,0,.6);
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.dict-popup-inner b {
+  font-size: 18px;
+  color: #22d3ee;
+}
 
 </style>
 </head>
@@ -477,6 +522,8 @@ select, .small, input, textarea {
       </div>
     </div>
   </div>
+
+  
 
   <!-- FLASHCARDS VIEW -->
   <div class="view active" id="viewFlash">
@@ -589,7 +636,7 @@ select, .small, input, textarea {
 
 </div>
 
-<script src="MIexam.js"></script>
+<script src="Miexam.js"></script>
 <script src="dictionary.js"></script>
 
 <script>
@@ -747,98 +794,132 @@ function quizEnsureData(){
     quizCard.innerHTML = "MIexam.js not loading.";
     return false;
   }
+
   allQuestions = window.MI_EXAM_QUESTIONS.map((q,i)=>({
     id:i,
     question:q.question,
     correct:q.correct,
+    wrongs:q.wrongs || [],
     explanation:q.explanation || ""
   }));
+
   return true;
 }
 
 function startQuiz(){
+
+  // 🔄 FULL RESET EVERY TIME START IS CLICKED
+  quizIndex = 0;
+  quizLocked = false;
+  quizCorrect = 0;
+  quizWrongList = [];
+  quizAnswered = new Set();
+  quizReviewingWrong = false;
+
   if(!quizEnsureData()) return;
 
   quizMode = document.getElementById("mode").value;
 
   const countVal = document.getElementById("questionCount").value;
 
-const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+  const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
 
-if (!countVal || countVal === "all") {
-
-  quizQuestions = shuffled;
-
-} else {
-
-  const num = parseInt(countVal);
-
-  if (isNaN(num) || num <= 0) {
+  if (!countVal || countVal === "all") {
 
     quizQuestions = shuffled;
 
   } else {
 
-    quizQuestions = shuffled.slice(0, num);
+    const num = parseInt(countVal);
+
+    if (isNaN(num) || num <= 0) {
+
+      quizQuestions = shuffled;
+
+    } else {
+
+      quizQuestions = shuffled.slice(0, num);
+
+    }
 
   }
 
-}
-// 🔒 Force close notes panel in Test mode
-if (quizMode === "test") {
-  const panel = document.getElementById("notesPanel");
-  if (panel) panel.style.display = "none";
-}
-// 🔒 Disable notes during test mode
-const notesBtn = document.getElementById("notesBtn");
-
-if (quizMode === "test") {
-  if (notesBtn) notesBtn.style.opacity = "0.4";
-} else {
-  if (notesBtn) notesBtn.style.opacity = "1";
-}
-// 🔒 Disable going back in Test mode
-const prevBtn = document.getElementById("prevBtn");
-
-if (quizMode === "test") {
-  if (prevBtn) {
-    prevBtn.style.opacity = "0.4";
-    prevBtn.style.pointerEvents = "none";
+  // 🔒 Force close notes panel in Test mode
+  if (quizMode === "test") {
+    const panel = document.getElementById("notesPanel");
+    if (panel) panel.style.display = "none";
   }
-} else {
-  if (prevBtn) {
-    prevBtn.style.opacity = "1";
-    prevBtn.style.pointerEvents = "auto";
-  }
-}
 
-// 🔥 Generate stable choices ONCE per question
-quizQuestions = quizQuestions.map(q => ({
-  ...q,
-  choices: getChoices(q.correct)
-}));
+  // 🔒 Disable notes button in Test mode
+  const notesBtn = document.getElementById("notesBtn");
+  if (quizMode === "test") {
+    if (notesBtn) notesBtn.style.opacity = "0.4";
+  } else {
+    if (notesBtn) notesBtn.style.opacity = "1";
+  }
+
+  // 🔒 Disable going back in Test mode
+  const prevBtn = document.getElementById("prevBtn");
+  if (quizMode === "test") {
+    if (prevBtn) {
+      prevBtn.style.opacity = "0.4";
+      prevBtn.style.pointerEvents = "none";
+    }
+  } else {
+    if (prevBtn) {
+      prevBtn.style.opacity = "1";
+      prevBtn.style.pointerEvents = "auto";
+    }
+  }
 
   renderQuiz();
   updateQuizUI();
 }
+let highlightedTermsThisQuestion = new Set();
 
-function getChoices(correct){
-  const choices = [correct];
-  const pool = allQuestions.map(q => q.correct).filter(Boolean);
-  let guard = 0;
+function highlightDictionaryTerms(text) {
 
-  while(choices.length < 4 && guard < 500){
-    guard++;
-    const r = pool[Math.floor(Math.random()*pool.length)];
-    if(r && !choices.includes(r)) choices.push(r);
+  if (quizMode !== "study") return escapeHTML(text);
+
+  if (typeof TERMS === "undefined" || !Array.isArray(TERMS)) {
+    return escapeHTML(text);
   }
 
-  while(choices.length < 4) choices.push(correct);
-  return choices.sort(()=>Math.random()-0.5);
+  let result = escapeHTML(text);
+
+  TERMS.forEach(raw => {
+
+    const termData = getTermData(raw);
+    const term = termData.term;
+    if (!term) return;
+
+    const lowerTerm = term.toLowerCase();
+
+    // If we've already highlighted this term somewhere
+    if (highlightedTermsThisQuestion.has(lowerTerm)) return;
+
+    const safeTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    const regex = new RegExp(`\\b${safeTerm}\\b`, "i");
+
+    const match = result.match(regex);
+    if (!match) return;
+
+    result = result.replace(
+      regex,
+      `<span class="dict-highlight" data-term="${escapeAttr(term)}">${match[0]}</span>`
+    );
+
+    highlightedTermsThisQuestion.add(lowerTerm);
+
+  });
+
+  return result;
 }
 
 function renderQuiz(){
   quizLocked = false;
+  highlightedTermsThisQuestion.clear();
 
   if(quizQuestions.length === 0){
     quizCard.innerHTML = `<div class="muted">Press Start to begin.</div>`;
@@ -849,18 +930,20 @@ function renderQuiz(){
   if(quizIndex >= quizQuestions.length) quizIndex = quizQuestions.length - 1;
 
   const q = quizQuestions[quizIndex];
-  const choices = q.choices;
+  const choices = [
+  q.correct,
+  ...(q.wrongs || [])
+];
 
   let html = `
     <div class="muted" style="margin-bottom:10px;">
       Question ${quizIndex+1} / ${quizQuestions.length}
       ${quizReviewingWrong ? " • Reviewing wrong" : ""}
     </div>
-    <div class="quiz-question"><b>${escapeHTML(q.question)}</b></div>
-  `;
+    <div class="quiz-question"><b>${highlightDictionaryTerms(q.question)}</b></div>`;
 
   choices.forEach(c=>{
-    html += `<div class="choice" data-choice="${escapeAttr(c)}">${escapeHTML(c)}</div>`;
+    html += `<div class="choice" data-choice="${escapeAttr(c)}">${highlightDictionaryTerms(c)}</div>`;
   });
 
   html += `<div id="quizExplain" class="muted" style="margin-top:12px;"></div>`;
@@ -869,6 +952,48 @@ function renderQuiz(){
   document.querySelectorAll(".choice").forEach(el=>{
     el.addEventListener("click", ()=> quizSelect(el, q));
   });
+
+  // 🔎 Dictionary term click (study mode only)
+// 🔎 Dictionary term click (study mode only)
+document.querySelectorAll(".dict-highlight").forEach(el => {
+  el.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    const term = el.getAttribute("data-term");
+    if (!term) return;
+
+    const found = TERMS.find(t => {
+      const data = getTermData(t);
+      return data.term.toLowerCase() === term.toLowerCase();
+    });
+
+    if (!found) return;
+
+    const data = getTermData(found);
+
+    // Remove existing popup if one exists
+    const existing = document.querySelector(".dict-popup");
+    if (existing) existing.remove();
+
+    const popup = document.createElement("div");
+    popup.className = "dict-popup";
+
+    popup.innerHTML = `
+      <div class="dict-popup-inner">
+        <b>${escapeHTML(data.term)}</b>
+        <div style="margin-top:12px; line-height:1.5;">
+          ${escapeHTML(data.definition)}
+        </div>
+        <div style="margin-top:16px; font-size:13px; color:#94a3b8;">
+          Tap anywhere to close
+        </div>
+      </div>
+    `;
+
+    popup.addEventListener("click", () => popup.remove());
+    document.body.appendChild(popup);
+  });
+});
 
   updateQuizUI();
 }
@@ -889,6 +1014,8 @@ function quizSelect(el, q){
   quizCorrect++;
 } else {
   quizWrongList.push(q);
+}
+  }
 
   // 🔒 Only auto-save in Study mode
   if (quizMode === "study") {
@@ -919,8 +1046,6 @@ function quizSelect(el, q){
   }
 
   }
- }
-}
 
   if(isCorrect){
     el.classList.add("correct");
