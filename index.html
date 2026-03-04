@@ -575,6 +575,7 @@ select, .small, input, textarea {
           <select id="mode">
             <option value="study">Study mode</option>
             <option value="test">Test mode</option>
+            <option value="mastery">Mastery mode</option>
           </select>
 
           <button class="small" onclick="startQuiz()" style="background:linear-gradient(90deg,#16a34a,#22c55e); font-weight:800;">
@@ -786,6 +787,8 @@ let quizCorrect = 0;
 let quizWrongList = [];
 let quizAnswered = new Set();
 let quizReviewingWrong = false;
+let masteryLevel = 10;
+const MAX_MASTERY = 150;
 
 const quizCard = document.getElementById("quizCard");
 
@@ -820,29 +823,55 @@ function startQuiz(){
 
   quizMode = document.getElementById("mode").value;
 
+// 🔒 Mastery Mode = NO HELP
+const panel = document.getElementById("notesPanel");
+const dictTab = document.getElementById("tabNotes");
+const notesBtn = document.getElementById("notesBtn");
+
+if (quizMode === "mastery") {
+
+  // close notes
+  if (panel) panel.style.display = "none";
+
+  // hide dictionary
+  if (dictTab) dictTab.style.display = "none";
+
+  // hide notes button
+  if (notesBtn) notesBtn.style.display = "none";
+
+} else {
+
+  // restore tools
+  if (dictTab) dictTab.style.display = "inline-block";
+  if (notesBtn) notesBtn.style.display = "inline-block";
+
+}
+
+const countVal = document.getElementById("questionCount").value;
+
+const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+
+if (quizMode === "mastery") {
+
+  quizQuestions = shuffled.slice(0, masteryLevel);
+
+} else {
+
   const countVal = document.getElementById("questionCount").value;
 
-  const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
-
   if (!countVal || countVal === "all") {
-
     quizQuestions = shuffled;
-
   } else {
-
     const num = parseInt(countVal);
 
     if (isNaN(num) || num <= 0) {
-
       quizQuestions = shuffled;
-
     } else {
-
       quizQuestions = shuffled.slice(0, num);
-
     }
-
   }
+
+}
 
   // 🔒 Force close notes panel in Test mode
   if (quizMode === "test") {
@@ -851,26 +880,32 @@ function startQuiz(){
   }
 
   // 🔒 Disable notes button in Test mode
-  const notesBtn = document.getElementById("notesBtn");
-  if (quizMode === "test") {
-    if (notesBtn) notesBtn.style.opacity = "0.4";
-  } else {
-    if (notesBtn) notesBtn.style.opacity = "1";
-  }
 
-  // 🔒 Disable going back in Test mode
-  const prevBtn = document.getElementById("prevBtn");
-  if (quizMode === "test") {
-    if (prevBtn) {
-      prevBtn.style.opacity = "0.4";
-      prevBtn.style.pointerEvents = "none";
-    }
-  } else {
-    if (prevBtn) {
-      prevBtn.style.opacity = "1";
-      prevBtn.style.pointerEvents = "auto";
-    }
-  }
+if (quizMode === "mastery") {
+
+  // hide notes button
+  if (notesBtn) notesBtn.style.display = "none";
+
+  // hide dictionary tab
+  if (dictTab) dictTab.style.display = "none";
+
+} 
+else if (quizMode === "test") {
+
+  // hide notes button only
+  if (notesBtn) notesBtn.style.display = "none";
+
+  // dictionary stays visible
+  if (dictTab) dictTab.style.display = "inline-block";
+
+} 
+else {
+
+  // restore both
+  if (notesBtn) notesBtn.style.display = "inline-block";
+  if (dictTab) dictTab.style.display = "inline-block";
+
+}
 
   renderQuiz();
   updateQuizUI();
@@ -930,10 +965,14 @@ function renderQuiz(){
   if(quizIndex >= quizQuestions.length) quizIndex = quizQuestions.length - 1;
 
   const q = quizQuestions[quizIndex];
-  const choices = [
+
+let choices = [
   q.correct,
   ...(q.wrongs || [])
 ];
+
+// shuffle answer order
+choices = choices.sort(() => Math.random() - 0.5);
 
   let html = `
     <div class="muted" style="margin-bottom:10px;">
@@ -1069,14 +1108,59 @@ function quizSelect(el, q){
   updateQuizUI();
 }
 
-function quizNext(){
-  if(quizQuestions.length === 0) return;
-  if(quizIndex < quizQuestions.length - 1){
+function quizNext() {
+
+  if (quizQuestions.length === 0) return;
+
+  // Only for Mastery Mode:
+  // If user has already missed ANY question, Next should immediately reset + round down.
+  if (quizMode === "mastery") {
+
+    // (Optional safety) don’t let them advance if they haven't answered current question
+    if (!quizAnswered.has(quizIndex)) {
+      // If you want, you can show a message instead of doing nothing
+      // document.getElementById("quizExplain").innerHTML = "<b>Answer this question first.</b>";
+      return;
+    }
+
+    // If they missed anything this run → ROUND DOWN + RESTART (shuffle)
+    if (quizWrongList.length > 0) {
+
+      masteryLevel = Math.floor(masteryLevel / 10) * 10;
+      if (masteryLevel < 10) masteryLevel = 10;
+
+      startQuiz(); // reshuffles + restarts at rounded-down level
+      return;
+    }
+
+    // If they are perfect so far, allow moving forward normally (until the end)
+    if (quizIndex < quizQuestions.length - 1) {
+      quizIndex++;
+      renderQuiz();
+      return;
+    }
+
+    // End of mastery round AND perfect → level up and restart
+    if (masteryLevel < MAX_MASTERY) masteryLevel += 10;
+    startQuiz();
+    return;
+  }
+
+  // Normal modes (study/test): standard next behavior
+  if (quizIndex < quizQuestions.length - 1) {
     quizIndex++;
     renderQuiz();
   } else {
     quizShowSummary();
+
+    // restart mastery round
+    startQuiz();
+    return;
+
   }
+
+  // all other modes behave normally
+  quizShowSummary();
 }
 
 function quizPrev(){
@@ -1097,6 +1181,24 @@ function quizShowSummary(){
   const wrong = quizWrongList.length;
   const correct = quizCorrect;
 
+if (quizMode === "mastery") {
+
+  if (wrong === 0) {
+
+    if (masteryLevel < MAX_MASTERY) {
+      masteryLevel += 10;
+    }
+
+  } else {
+
+    // failed mastery level → reshuffle same level
+    const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+    quizQuestions = shuffled.slice(0, masteryLevel);
+
+  }
+
+}
+
   let percent = 0;
 
   if (total > 0) {
@@ -1116,6 +1218,8 @@ function quizShowSummary(){
       Percentage: <b style="font-size:20px; color:#22c55e;">
         ${percent}%
       </b>
+      <br><br>
+Mastery Level: <b>${masteryLevel} Questions</b>
 
       <br><br>
 
@@ -1127,11 +1231,11 @@ function quizShowSummary(){
       </button>
 
       <button class="small"
-        onclick="startQuiz()"
-        style="margin-left:8px;"
-      >
-        Restart
-      </button>
+  onclick="startQuiz()"
+  style="margin-left:8px;"
+>
+Continue
+</button>
 
     </div>
   `;
@@ -1271,9 +1375,12 @@ let editingIndex = null;
 function toggleNotesPanel(){
 
   // 🚫 Block notes in test mode
-  if (quizMode === "test" && document.getElementById("viewQuiz").classList.contains("active")) {
-    return;
-  }
+ if (
+  (quizMode === "test" || quizMode === "mastery") &&
+  document.getElementById("viewQuiz").classList.contains("active")
+) {
+  return;
+}
 
   const p = document.getElementById("notesPanel");
 
